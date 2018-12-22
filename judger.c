@@ -9,6 +9,8 @@
 #endif 
 
 #ifdef __UNIX64
+	#include <sys/resource.h>
+	#include <sys/time.h>
     #include <sys/wait.h>
 	#include <sys/syscall.h>
 	#include <sys/reg.h>
@@ -29,6 +31,9 @@
 #define DATA_OUT	"data.out"
 #define USER_OUT	REDICT_STDOUT
 
+#define LOG_SYS_ERR "sysERROR.log"
+#define LOG_SQL_ERR "sqlERROR.log"
+
 #define LAN_CPP 0
 #define LAN_C 1
 #define LAN_JAVA 3
@@ -45,6 +50,15 @@
 #define OJ_QU 9
 #define OJ_CL 10
 #define OJ_RN 11
+
+#define ERROR_ON(cond, msg) do { 							\
+	if(cond) {												\
+		fprintf(stderr, "In file %s function:[%s]: %d: ", __FILE__, __FUNCTION__, __LINE__);	\
+		perror(msg);										\
+		return -1;											\
+	}														\
+}while(0); 													
+
 
 const char* cmd[] = {
 	"g++ -std=c++14 -O2 -w \"%s\" -o \"%s\"",
@@ -82,7 +96,62 @@ static int work() {
 
 int compile(int lang, const char* cFile, const char* runId)
 {
-// redirect std I/O 
+
+}
+
+int setCpeLimit(int timeLimit, int memLimit)
+{
+
+}
+
+int setRunLimit(int timeLimit, int memLimit, int staLimit)
+{
+	// Time Limit 
+	// sturct itimerval timer;
+	// gettimeofday (&timer.it_value, NULL); 
+	// timer.it_interval.tv_usec = timer.it_interval.tv_sec = 0;
+	// timer.it_value.tv_sec = timeLimit / 1000; // seconds
+	// timer.it_value.tv_usec = timeLimit % 1000 * 1000; //microseconds
+	// ERROR_ON(setitimer (ITIMER_REAL, &timer, NULL), "Set ITIMER_REAL failed");
+
+	// CPU Time Limit 
+	struct rlimit cpul;
+	cpul.rlim_cur = cpul.rlim_max = timeLimit / 1000.0 + 1;
+	ERROR_ON(setrlimit(RLIMIT_CPU, &cpul), "ERROR: Set RLIMIT_CPU failed");
+	alarm(6);
+
+	// Memory Limit unit: KB
+	struct rlimit meml;
+	meml.rlim_cur = memLimit * 1024;
+	meml.rlim_max = memLimit * 1024 + 1024;
+	ERROR_ON(setrlimit(RLIMIT_DATA, &meml), "ERROR: Set RLIMIT_DATA failed");
+
+	// As 
+	struct rlimit asl;
+	asl.rlim_cur = memLimit * 1024 * 1280;
+	asl.rlim_max = memLimit * 1024 * 1280;
+	ERROR_ON(setrlimit(RLIMIT_AS, &asl), "ERROR: Set RLIMIT_AS failed");
+
+	// stack
+	struct rlimit stal;
+	stal.rlim_cur = 256 * 1024 * 1024;
+	stal.rlim_max = stal.rlim_cur + 1024;
+	ERROR_ON(setrlimit(RLIMIT_STACK, &stal), "ERROR: Set RLIMIT_STACK failed");
+
+	// fsize 
+	struct rlimit fszl;
+	fszl.rlim_cur = 1024 * 1024 * 40; //40 MB
+	fszl.rlim_max = 1024 * 1024 * 40;
+	ERROR_ON(setrlimit(RLIMIT_FSIZE, &fszl), "ERROR: Set RLIMIT_FSIZE failed");
+
+	return 0;
+}
+
+int main(int argc, char const *argv[])
+{
+	/* code */
+
+	// redirect std I/O 
 	//freopen(REDICT_STDIN, "r", stdin);
 	freopen(REDICT_STDOUT, "w", stdout);
 	freopen(REDICT_STDERR, "a", stderr);
@@ -103,27 +172,26 @@ int compile(int lang, const char* cFile, const char* runId)
 	int pid = fork();
 	if(pid == 0)
 	{
-		int err = execl("/home/isolet/ox", "./ox", NULL);
-		printf("~~~~~~~~~~~%d-%d\n", err, errno);	
+		int err = execvp("g++", (char* const *)cmdd);
+		printf("child~~~~~~~~~~~%d-%d\n", err, errno);	
+		exit(0);
 	}
 	else if(pid > 0)
 	{
 		int status;
 	    waitpid(pid, &status, 0);
-		int err = execvp("g++", (char* const *)cmdd);
-	    printf("~~~~~~~~~~~~~%d-%d\n",err, errno);
+		int err = execl("ox", "./ox", NULL);
+	    printf("father~~~~~~~~~~~~~%d-%d\n",err, errno);
+	    return status;
+	}
+	else if(pid == -1) 
+	{
+		ERROR_ON(1, "ERROR: fork() to compile falied");		
 	}
 	//sleep(5);
 	
 #endif 
 	fclose(stdout);
 	fclose(stderr);
-}
-
-int main(int argc, char const *argv[])
-{
-	/* code */
-
-	
 	return 0;
 }

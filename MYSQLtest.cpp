@@ -1,31 +1,24 @@
-/** @Date    : 2018-12-19 20:38:48
-  * @FileName: MYSQLtest.cpp
-  * @Platform: Windows
-  * @Author  : Lweleth (SoungEarlf@gmail.com)
-  * @Link    : https://github.com/
-  * @Version : $Id$
-  */
-#include <bits/stdc++.h>
+#include <stdio.h>
 #include <mysql.h>
 
-#define LL long long
-#define PII pair<int ,int>
-#define MP(x, y) make_pair((x),(y))
-#define fi first
-#define se second
-#define PB(x) push_back((x))
-#define MMG(x) memset((x), -1,sizeof(x))
-#define MMF(x) memset((x),0,sizeof(x))
-#define MMI(x) memset((x), INF, sizeof(x))
-using namespace std;
-
-const int INF = 0x3f3f3f3f;
-const int N = 1e5+20;
-const double eps = 1e-8;
-
-
-int main()
+int main(int argc,char *argv[])
 {
-
+    MYSQL conn;
+    int res;
+    mysql_init(&conn);
+    if(mysql_real_connect(&conn,"localhost","root","","test",0,NULL,CLIENT_FOUND_ROWS)) //"root":数据库管理员 "":root密码 "test":数据库的名字
+    {
+        printf("connect success!\n");
+        res=mysql_query(&conn,"insert into test values('user','123456')");
+        if(res)
+        {
+            printf("error\n");
+        }
+        else
+        {
+            printf("OK\n");
+        }
+        mysql_close(&conn);
+    }
     return 0;
 }
