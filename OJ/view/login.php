@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<?php //require_once('./include/common_head.inc.php'); ?> 
+	<?php require_once("./view/components/header.php"); ?> 
 	<title><?php echo "0n1in3 Judg3";?></title>
 </head>	
 <body style="background:url(./resource/pic/loginbg.png);">

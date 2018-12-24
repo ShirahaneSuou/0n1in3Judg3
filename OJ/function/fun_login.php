@@ -1,5 +1,16 @@
 <?php
-
+    //sha1 160bit 摘要 换算=20字节
+    //md5  128bit      换算=18字节
+    //base64 4/3倍字节
+    //salt 取随机4字节
+    function PasswordEncode($pw, $haveMD5 = false) {
+        if(!$haveMD5)
+            $pw = md5($pw);
+        $salt = sha1(rand());
+        $salt = substr($salt, 0, 4);
+        $hash = base64_encode(sha1($pw.$salt, true).$salt);
+        return $hash;
+    }
     function ComparePassword($right, $input) {
         $flag = 0;
         for($i = 0; $i < strlen($right); $i++) {
@@ -20,7 +31,7 @@
         }
         // encode input 
         $base64Decode = base64_decode($right);
-        $salt = substr($base64Decode, 20);
+        $salt = substr($base64Decode, 20);//前20字节是 sha1加密的 经过md5加密的密码连接盐 的摘要
         $hash = base64_encode(sha1( md5($input).$salt, true ).$salt);
         //echo "{$hash} | {$right}";
         // 

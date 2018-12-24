@@ -62,7 +62,7 @@
 			</ul>
 			<?php } else { ?>
 			<ul class="nav navbar-nav navbar-right">
-				<li class="nav-item"><a class="nav-link"href="./registerpage.php"><i class="fa fa-user-plus"></i> <?php echo "Sign Up";?></a></li>
+				<li class="nav-item"><a class="nav-link"href="./register.php"><i class="fa fa-user-plus"></i> <?php echo "Sign Up";?></a></li>
 				<li class="nav-item"><a class="nav-link"href="./login.php"><i class="fa fa-sign-in"></i> <?php echo "Sign In";?></a></li>
 			</ul>
 			<?php } ?>
