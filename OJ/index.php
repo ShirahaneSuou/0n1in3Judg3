@@ -3,6 +3,6 @@
     
     require_once("./function/define.php");
     
-
+    require("./view/index.php");
 
 ?>

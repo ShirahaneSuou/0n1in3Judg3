@@ -6,7 +6,7 @@
 
     /* SQL CONFIG */
     $ENV_SQL = "STD_MYSQL";
-    $SQL_NAME = "judege";
+    $SQL_NAME = "judge";
     $SQL_HOST = "localhost";
     $SQL_PORT = "3306";
     $SQL_USERNAME = "root";
