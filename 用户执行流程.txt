@@ -1,0 +1,10 @@
+BROSWER：
+URL HTTP-REQUEST=>
+ROUTE to php=> 
+
+CONTROLOR PHP(页面路由时的预处理):require(
+VIEW PHP（前端页面的显示）,
+FUNCTION PHP（页面中功能模块的单一处理函数）)
+
+(=>server response)
+
