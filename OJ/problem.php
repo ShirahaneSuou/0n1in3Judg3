@@ -11,13 +11,12 @@
         $ERR_MSG = "404 Problem Not found";
         exit("$ERR_MSG");
     } 
-
     $sql = $pdo->prepare("SELECT * FROM problem 
             WHERE problem_id = ?");
-    $sql->excute(array($pid));
-    $result = $sql->fetch(PDO::FETCH_ASSOC);
+    $sql->execute(array($pid));
+    $problemInfo = $sql->fetch(PDO::FETCH_ASSOC);
 
-    if(!$result) {
+    if(!$problemInfo) {
         $ERR_MSG = "403 Problem Get Failed";
         exit("$ERR_MSG");
     }

@@ -12,6 +12,7 @@
     try{
         $dsn = 'mysql:dbname='. DB_NAME .';host='. DB_HOST .';port='.DB_PORT;
         $pdo = new PDO($dsn, DB_USER, DB_PASS);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->query("set names utf8;");
     } 
     catch(PDOException $e){

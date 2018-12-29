@@ -46,6 +46,12 @@
 </table>
             <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
                 <div class="btn-group" role="group" aria-label="First group">
+                    <?php
+                        $totalpages = 1 + ($totalcnt / 50); 
+                        for($i = 1; $i <= $totalpages; $i++) {
+                            echo "<button type='button' class='btn btn-secondary mb-3'>{$i}</button>";
+                        }
+                    ?>
                     <button type="button" class="btn btn-secondary mb-3">1</button>
                     <button type="button" class="btn btn-secondary mb-3">2</button>
                     <button type="button" class="btn btn-secondary mb-3">3</button>
@@ -73,7 +79,28 @@
 							</tr>
 						</thead>
 						<tbody id="oj-ps-problemlist">
-							<tr><td>Loading...</td></tr>
+							<tr>
+                            <td>Loading...</td>
+                            </tr>
+                            <?php
+                                foreach ( $problemlist as $row) {
+                                    echo "<tr>";
+                                        echo "<td>".""."</td>";
+                                        echo "<td>"."{$row['problem_id']}"."</td>";
+                                        echo "<td><a href='problem.php?pid={$row['problem_id']}' >". 
+                                            "{$row['title']}"."</a></td>";
+                                        if(floatval($row['submit'])==0) {
+                                            $percent = "-";
+                                        }
+                                        else {
+                                            $percent = (floatval($row['accepted']) / floatval($row['submit']))*100;   
+                                        }
+                                        echo "<td>"."<div class='progress maxwidth150px'><div class='progress-bar progress-bar-striped' style='width: {$percent}%;'></div></div>"."</td>";
+                                        echo "<td>"."{$row['source']}"."</td>";
+                                        echo "<td>"."({$row['accepted']}/{$row['submit']}) {$percent}%"."</td>";
+                                    echo "</tr>";
+                                }
+                            ?>
 						</tbody>
 					</table>
 				</div>
